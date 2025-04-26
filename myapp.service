@@ -1,0 +1,14 @@
+[Unit]
+Description=My Java Application
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/myapp
+
+EnvironmentFile=/opt/myapp/.env 
+ExecStartPre=/bin/bash -c 'until mysql -h "${RDS_HOST}" -P 3306 -u "${DB_USERNAME}" -p"${DB_PASSWORD}" -e "SELECT 1"; do sleep 5; done'
+ExecStart=/usr/bin/java -jar /opt/myapp/myapp.jar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
